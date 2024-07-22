@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailsView: View {
-    @ObservedObject var viewModel: NoteViewModel
+    @EnvironmentObject var viewModel: NoteViewModel
     
     var note: Note
     @State private var presentAlert = false
@@ -53,5 +53,5 @@ struct DetailsView: View {
 }
 
 #Preview {
-    DetailsView(viewModel: NoteViewModel(), note: Note(title: "Test"))
+    DetailsView(note: Note(title: "Test"))
 }
