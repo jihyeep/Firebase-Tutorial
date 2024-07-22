@@ -44,4 +44,20 @@ class NoteViewModel: ObservableObject {
                 print("Note updated successfully")
             }}
     }
+    
+    
+    // 데이터 삭제
+    func deleteData(at indexSet: IndexSet) {
+        indexSet.forEach { index in
+            let note = notes[index]
+            databaseReference.document(note.id ?? "").delete { error in
+                // Error가 있다면
+                if let error = error {
+                    print("\(error.localizedDescription)")
+                } else {
+                    print("Note with ID \(note.id ?? "")")
+                }
+            }
+        }
+    }
 }
