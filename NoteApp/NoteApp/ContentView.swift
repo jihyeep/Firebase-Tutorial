@@ -8,14 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSheet = false
+    @State private var postDetent = PresentationDetent.medium
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Text(" X notes")
+                    Spacer()
+                    Button {
+                        showSheet.toggle()
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    .imageScale(.large)
+                    .sheet(isPresented: $showSheet) {
+                        FormView()
+                            // 팝업창 멈춤쇠
+                            .presentationDetents([.large, .medium])
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 

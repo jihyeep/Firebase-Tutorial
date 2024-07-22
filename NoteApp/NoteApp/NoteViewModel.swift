@@ -12,4 +12,9 @@ class NoteViewModel: ObservableObject {
     @Published var notes = [Note]()
     
     private var databaseReference = Firestore.firestore().collection("Notes")
+    
+    func addData(title: String) {
+        let docRef = databaseReference.addDocument(data: ["title": title])
+        dump(docRef)
+    }
 }
