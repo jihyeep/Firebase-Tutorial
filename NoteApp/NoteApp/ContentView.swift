@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = NoteViewModel()
+    
     @State private var showSheet = false
     @State private var postDetent = PresentationDetent.medium
-    @StateObject private var viewModel = NoteViewModel()
     
     var body: some View {
         NavigationStack {
             List {
                 ForEach(viewModel.notes, id: \.id) { note in
-                    NavigationLink(destination: DetailsView(note: note)) {
+                    NavigationLink(destination: DetailsView(viewModel: viewModel, note: note)) {
                         VStack(alignment: .leading) {
                             Text(note.title ?? "")
                                 .font(.system(size: 22, weight: .regular))
