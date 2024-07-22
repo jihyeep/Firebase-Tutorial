@@ -16,9 +16,11 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(viewModel.notes, id: \.id) { note in
-                    VStack(alignment: .leading) {
-                        Text(note.title ?? "")
-                            .font(.system(size: 22, weight: .regular))
+                    NavigationLink(destination: DetailsView(note: note)) {
+                        VStack(alignment: .leading) {
+                            Text(note.title ?? "")
+                                .font(.system(size: 22, weight: .regular))
+                        }
                     }
                 }
             }
@@ -28,7 +30,7 @@ struct ContentView: View {
             .navigationTitle("Notes")
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Text(" X notes")
+                    Text(" \(viewModel.notes.count) notes")
                     Spacer()
                     Button {
                         showSheet.toggle()
