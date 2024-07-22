@@ -155,3 +155,6 @@ xcuserdata
 *.jpeg
 *.png
 *.mlmodel
+
+### Info ###
+*.plist
