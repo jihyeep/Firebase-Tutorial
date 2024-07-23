@@ -18,6 +18,21 @@ class AuthService: ObservableObject {
     ///암호화 통신에서 한 번만 사용할 수 있는 임의의 숫자
     var currentNonce: String?
     
+    // MARK: - Auth Methods
+    func listenToAuthState() {
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            self?.user = user
+        }
+    }
+
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
+    }
+    
     // MARK: - Sign In with Apple Methods
     func signInWithApple(request: ASAuthorizationAppleIDRequest) {
         let nonce = randomNonceString()

@@ -22,11 +22,23 @@ struct SociallyApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @StateObject var authService = AuthService()
+    @StateObject var viewModel = PostViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            SignUpView()
-                .environmentObject(PostViewModel())
-                .environmentObject(AuthService())
+            Group {
+                if authService.user == nil {
+                    SignUpView()
+                } else {
+                    FeedView()
+                        .environmentObject(viewModel)
+                }
+            }
+            .environmentObject(authService)
+            .onAppear {
+                authService.listenToAuthState()
+            }
         }
     }
 }
