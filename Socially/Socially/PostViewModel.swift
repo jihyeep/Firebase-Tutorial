@@ -13,4 +13,15 @@ class PostViewModel: ObservableObject {
     
     private var databaseReference = Firestore.firestore().collection("Posts")
     
+    func addData(description: String, datePublished: Date) async {
+        do {
+            _ = try await databaseReference.addDocument(data: [
+                "description": description,
+                "datePublished": datePublished
+            ])
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
 }
