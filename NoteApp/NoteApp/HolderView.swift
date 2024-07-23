@@ -26,4 +26,5 @@ struct HolderView: View {
 
 #Preview {
     HolderView()
+        .environmentObject(AuthService())
 }

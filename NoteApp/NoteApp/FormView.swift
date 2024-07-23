@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct FormView: View {
-    @EnvironmentObject var viewModel: NoteViewModel
-    
     @Environment(\.dismiss) var dismiss
+    
+    @EnvironmentObject private var viewModel: NoteViewModel
+    
     @State var titleText = ""
     
     var body: some View {

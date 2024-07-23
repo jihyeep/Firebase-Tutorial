@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var authService: AuthService
+    
     @StateObject private var viewModel = NoteViewModel()
     
     @State private var showSheet = false
@@ -31,6 +33,13 @@ struct ContentView: View {
             }
             .navigationTitle("Notes")
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        authService.signOut()
+                    } label: {
+                        Text("Sign out")
+                    }
+                }
                 ToolbarItemGroup(placement: .bottomBar) {
                     Text(" \(viewModel.notes.count) notes")
                     Spacer()

@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @EnvironmentObject private var authService: AuthService
+    
     @State private var emailAddress: String = ""
     @State private var password: String = ""
     @State private var showingSheet: Bool = false
-    
-    @EnvironmentObject private var authService: AuthService
     
     var body: some View {
         NavigationStack {
@@ -21,6 +21,7 @@ struct SignUpView: View {
                     TextField("Email", text: $emailAddress)
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
                     SecureField("Password", text: $password)
                 }
                 Section {
@@ -60,5 +61,4 @@ struct SignUpView: View {
 
 #Preview {
     SignUpView()
-//        .environmentObject(AuthService())
 }

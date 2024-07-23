@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct DetailsView: View {
-    @EnvironmentObject var viewModel: NoteViewModel
-    
-    var note: Note
+    @EnvironmentObject private var viewModel: NoteViewModel
+
     @State private var presentAlert = false
     @State private var titleText = ""
+    
+    var note: Note
     
     var body: some View {
         NavigationStack {

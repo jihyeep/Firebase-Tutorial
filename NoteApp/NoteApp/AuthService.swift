@@ -49,4 +49,13 @@ final class AuthService: ObservableObject {
             print("Error signing out: %@", signOutError)
         }
     }
+    
+    func resetPassword(emailAddress: String) {
+        Auth.auth().sendPasswordReset(withEmail: emailAddress) { error in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            }
+            print("done")
+        }
+    }
 }
