@@ -24,8 +24,9 @@ struct SociallyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            PostView()
+            SignUpView()
                 .environmentObject(PostViewModel())
+                .environmentObject(AuthService())
         }
     }
 }
