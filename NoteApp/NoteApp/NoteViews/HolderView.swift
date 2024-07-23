@@ -15,7 +15,7 @@ struct HolderView: View {
             if authService.user == nil {
                 SignUpView()
             } else {
-                ContentView()
+                NoteListView()
             }
         }
         .onAppear {

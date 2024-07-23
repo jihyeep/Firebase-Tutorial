@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct NoteListView: View {
     @EnvironmentObject private var authService: AuthService
     
     @StateObject private var viewModel = NoteViewModel()
@@ -62,5 +62,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    NoteListView()
 }
