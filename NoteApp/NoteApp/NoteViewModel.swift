@@ -7,22 +7,29 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseAuth
 
 class NoteViewModel: ObservableObject {
     @Published var notes = [Note]()
-//    @Published var selectedNote = Note()
+    //    @Published var selectedNote = Note()
     
-    private var databaseReference = Firestore.firestore().collection("Notes")
+    private lazy var databaseReference: CollectionReference? = {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            return nil
+        }
+        let ref = Firestore.firestore().collection("Users").document(userId).collection("Posts")
+        return ref
+    }()
     
     // 데이터 삽입
     func addData(title: String) {
-        let docRef = databaseReference.addDocument(data: ["title": title])
+        let docRef = databaseReference?.addDocument(data: ["title": title])
         dump(docRef)
     }
     
     // 데이터 조회
     func fetchData() {
-        databaseReference.addSnapshotListener { (querySnapshot, error) in
+        databaseReference?.addSnapshotListener { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents else {
                 print("No Documents")
                 return
@@ -37,7 +44,7 @@ class NoteViewModel: ObservableObject {
     
     // 데이터 업데이트
     func updateData(title: String, id: String) {
-        databaseReference.document(id).updateData(["title": title]) { error in
+        databaseReference?.document(id).updateData(["title": title]) { error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -45,12 +52,11 @@ class NoteViewModel: ObservableObject {
             }}
     }
     
-    
     // 데이터 삭제
     func deleteData(at indexSet: IndexSet) {
         indexSet.forEach { index in
             let note = notes[index]
-            databaseReference.document(note.id ?? "").delete { error in
+            databaseReference?.document(note.id ?? "").delete { error in
                 // Error가 있다면
                 if let error = error {
                     print("\(error.localizedDescription)")

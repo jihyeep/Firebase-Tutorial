@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 
 /// final: 더이상 상속, 수정, 변조되지 않도록
 final class AuthService: ObservableObject {
@@ -37,8 +38,20 @@ final class AuthService: ObservableObject {
             if let error = error {
                 print("create error: \(error.localizedDescription)")
                 return
+            } else {
+                print("User ID: \(result?.user.uid ?? "-")")
+                
+//                guard let uid = Auth.auth().currentUser?.uid else { return }
+                /// 위 코드와 동일
+                guard let uid = result?.user.uid else { return }
+                Firestore.firestore().collection("Users").document(uid).setData(["email": emailAddress, "uid": uid]) { error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    print("Success")
+                }
             }
-            dump(result)
         }
     }
     
