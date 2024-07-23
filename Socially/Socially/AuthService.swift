@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 import AuthenticationServices
 import CryptoKit
 
@@ -17,8 +18,59 @@ class AuthService: ObservableObject {
     ///암호화 통신에서 한 번만 사용할 수 있는 임의의 숫자
     var currentNonce: String?
     
+    // MARK: - Sign In with Apple Methods
+    func signInWithApple(request: ASAuthorizationAppleIDRequest) {
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.requestedScopes = [.email]
+        request.nonce = sha256(nonce)
+    }
+    
+    func signInWithAppleCompletion(result: Result<ASAuthorization, any Error>) {
+        switch result {
+        case .success(let authResults):
+            switch authResults.credential {
+            case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                guard let nonce = currentNonce else {
+                    fatalError("Invalid state: A login callback was received, but no login request was sent.")
+                }
+                guard let appleIDToken = appleIDCredential.identityToken else {
+                    fatalError("Invalid state: A login callback was received, but no login request was sent.")
+                }
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                    print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                    return
+                }
+                let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                          idToken: idTokenString,
+                                                          rawNonce: nonce)
+                Auth.auth().signIn(with: credential) { (authResult, error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                        return
+                    }
+                    print("signed in")
+                    guard let user = authResult?.user else { return }
+                    
+                    let userData = ["email": user.email, "uid": user.uid]
+                    Firestore.firestore().collection("User")
+                        .document(user.uid)
+                        .setData(userData as [String : Any]) { _ in
+                            print("DEBUG: Did upload user data.")
+                        }
+                }
+                print("\(String(describing: Auth.auth().currentUser?.uid))")
+            default:
+                break
+            }
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
+    }
+    
+    // MARK: - Private Methods
     // 난수 생성
-    func randomNonceString(length: Int = 32) -> String {
+    private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
         var result = ""
@@ -51,7 +103,7 @@ class AuthService: ObservableObject {
     }
     
     // 해시 함수(암호화)
-    func sha256(_ input: String) -> String {
+    private func sha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
         let hashedData = SHA256.hash(data: inputData)
         let hashString = hashedData.compactMap {
