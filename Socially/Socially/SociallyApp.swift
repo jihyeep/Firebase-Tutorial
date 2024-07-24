@@ -39,7 +39,8 @@ struct SociallyApp: App {
 //            .onAppear {
 //                authService.listenToAuthState()
 //            }
-            ProfileView()
+            PostView()
+                .environmentObject(viewModel)
         }
     }
 }
