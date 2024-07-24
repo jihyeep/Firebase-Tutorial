@@ -10,8 +10,6 @@ import FirebaseFirestore
 import FirebaseStorage
 
 class PostViewModel: ObservableObject {
-    @Published var posts = [Post]()
-    
     private var databaseReference = Firestore.firestore().collection("Posts")
     private let storageReference = Storage.storage().reference().child("\(UUID().uuidString)")
     

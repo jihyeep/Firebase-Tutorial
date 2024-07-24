@@ -9,11 +9,13 @@ import SwiftUI
 import PhotosUI
 
 struct PostView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @EnvironmentObject private var viewModel: PostViewModel
     
     @State private var description = ""
-    @State var data: Data?
-    @State var selectedItem: [PhotosPickerItem] = []
+    @State private var data: Data?
+    @State private var selectedItem: [PhotosPickerItem] = []
     
     var body: some View {
         NavigationStack {
@@ -57,6 +59,7 @@ struct PostView: View {
                                 return
                             }
                             print("upload & post done")
+                            dismiss()
                         }
                     } label: {
                         Text("Post")

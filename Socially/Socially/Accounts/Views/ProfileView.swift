@@ -10,11 +10,11 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject var authService: AuthService
     
-    @State private var showSignUp: Bool = false
+    @State private var showingSignUp: Bool = false
     
     var body: some View {
         VStack(alignment: .center) {
-            if authService.user == nil {
+            if authService.user != nil {
                 Form {
                     Section("Your account") {
                         Text(authService.user?.email ?? "")
@@ -32,13 +32,13 @@ struct ProfileView: View {
                         Text("Seems like you are not logged in, create an account")
                     }
                     Button {
-                        showSignUp.toggle()
+                        showingSignUp.toggle()
                     } label: {
                         Text("Sign Up")
                             .foregroundStyle(.blue)
                             .bold()
                     }
-                    .sheet(isPresented: $showSignUp) {
+                    .sheet(isPresented: $showingSignUp) {
                         SignUpView().presentationDetents([.height(100), .medium, .large])
                     }
                 }

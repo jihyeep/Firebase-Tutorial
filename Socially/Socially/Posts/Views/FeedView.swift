@@ -11,7 +11,13 @@ import FirebaseFirestoreSwift
 struct FeedView: View {
     @EnvironmentObject private var authService: AuthService
     
-    @FirestoreQuery(collectionPath: "Posts") var posts: [Post]
+    // 시간순 정렬
+    @FirestoreQuery(
+        collectionPath: "Posts",
+        predicates: [.order(by: "datePublished", descending: true)]
+    ) var posts: [Post]
+    
+    @State private var showingPost: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -24,10 +30,12 @@ struct FeedView: View {
                         case .success(let image):
                             image
                                 .resizable()
-                                .frame(width: 300, height: 200)
+                                .scaledToFill()
+                                .frame(width: 300, height: 200, alignment: .center)
+                                .clipped()
                         case .failure:
                             Image(systemName: "photo")
-                        default:
+                        @unknown default:
                             EmptyView()
                         }
                     }
@@ -43,13 +51,16 @@ struct FeedView: View {
             }
             .navigationTitle("Feed")
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        authService.signOut()
+                        showingPost = true
                     } label: {
-                        Text("Sign out")
+                        Image(systemName: "square.and.pencil")
                     }
                 }
+            }
+            .sheet(isPresented: $showingPost) {
+                PostView().presentationDetents([.medium, .large])
             }
         }
     }

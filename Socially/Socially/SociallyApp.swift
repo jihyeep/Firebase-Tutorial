@@ -9,12 +9,12 @@ import SwiftUI
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        
+        return true
+    }
 }
 
 @main
@@ -27,20 +27,22 @@ struct SociallyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if authService.user == nil {
-                    SignUpView()
-                } else {
+            TabView {
+                if authService.user != nil {
                     FeedView()
-                        .environmentObject(viewModel)
+                        .tabItem {
+                            Image(systemName: "text.bubble")
+                            Text("Feeds")
+                        }
                 }
+                ProfileView()
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("Account")
+                    }
             }
             .environmentObject(authService)
-            .onAppear {
-                authService.listenToAuthState()
-            }
-//            PostView()
-//                .environmentObject(viewModel)
+            .environmentObject(viewModel)
         }
     }
 }
