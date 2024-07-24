@@ -27,18 +27,19 @@ struct SociallyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if authService.user == nil {
-                    SignUpView()
-                } else {
-                    FeedView()
-                        .environmentObject(viewModel)
-                }
-            }
-            .environmentObject(authService)
-            .onAppear {
-                authService.listenToAuthState()
-            }
+//            Group {
+//                if authService.user == nil {
+//                    SignUpView()
+//                } else {
+//                    FeedView()
+//                        .environmentObject(viewModel)
+//                }
+//            }
+//            .environmentObject(authService)
+//            .onAppear {
+//                authService.listenToAuthState()
+//            }
+            ProfileView()
         }
     }
 }
