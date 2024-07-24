@@ -42,7 +42,7 @@ class AuthService: ObservableObject {
         /// 'imageData'는 업로드할 이미지의 데이터, 'metadata'는 추가 정보인데 여기서는 사용하지 않음
         storageReference.putData(imageData, metadata: nil) { metadata, error in
             // 업로드 중 에러가 발생했는지 확인
-            if let error = error {
+            if error != nil {
                 return
             }
             

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseFirestoreSwift
+import FirebaseAnalyticsSwift
 
 struct FeedView: View {
     @EnvironmentObject private var authService: AuthService
@@ -62,6 +63,7 @@ struct FeedView: View {
             .sheet(isPresented: $showingPost) {
                 PostView().presentationDetents([.medium, .large])
             }
+            .analyticsScreen(name: "FeedView")
         }
     }
 }

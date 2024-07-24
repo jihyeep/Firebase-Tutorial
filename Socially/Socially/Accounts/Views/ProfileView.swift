@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import FirebaseAnalyticsSwift
 
 struct ProfileView: View {
     @EnvironmentObject var authService: AuthService
@@ -30,7 +31,7 @@ struct ProfileView: View {
                                         image
                                             .resizable()
                                             .scaledToFill()
-                                            .frame(width: 320, height: 200)
+                                            .frame(width: 100, height: 100)
                                             .clipped()
                                     case .failure:
                                         Image(systemName: "person.circle")
@@ -89,6 +90,7 @@ struct ProfileView: View {
         .onAppear {
             authService.listenToAuthState()
         }
+        .analyticsScreen(name: "ProfileView")
     }
 }
 

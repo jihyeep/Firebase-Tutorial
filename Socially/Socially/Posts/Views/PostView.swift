@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import FirebaseAnalyticsSwift
 
 struct PostView: View {
     @Environment(\.dismiss) var dismiss
@@ -73,6 +74,7 @@ struct PostView: View {
                 }
             }
             .navigationTitle("New Post")
+            .analyticsScreen(name: "PostView")
         }
     }
 }
