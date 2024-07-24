@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 import AuthenticationServices
 import CryptoKit
 
@@ -24,12 +25,39 @@ class AuthService: ObservableObject {
             self?.user = user
         }
     }
-
+    
     func signOut() {
         do {
             try Auth.auth().signOut()
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
+        }
+    }
+    
+    // MARK: - Profile Image
+    func uploadProfileImage(_ imageData: Data) {
+        let storageReference = Storage.storage().reference().child("\(UUID().uuidString)")
+        
+        storageReference.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                return
+            }
+            
+            storageReference.downloadURL { url, error in
+                if let imageURL = url,
+                   let user = Auth.auth().currentUser {
+                    let changeRequest = user.createProfileChangeRequest()
+                    changeRequest.photoURL = imageURL
+                    changeRequest.commitChanges {
+                        error in
+                        if let error = error {
+                            print("\(error.localizedDescription)")
+                            return
+                        }
+                        self.user = Auth.auth().currentUser
+                    }
+                }
+            }
         }
     }
     
