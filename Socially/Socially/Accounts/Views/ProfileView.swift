@@ -20,29 +20,22 @@ struct ProfileView: View {
             if authService.user != nil {
                 Form {
                     Section("Your account") {
-                        HStack {
+                        VStack {
                             PhotosPicker(selection: $selectedItem, maxSelectionCount: 1, selectionBehavior: .default, matching: .images, preferredItemEncoding: .automatic) {
-                                if let data = data, let image = UIImage(data: data) {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(maxHeight: 80)
-                                } else {
-                                    AsyncImage(url: authService.user?.photoURL) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            EmptyView()
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 80, height: 80)
-                                                .clipped()
-                                        case .failure:
-                                            Image(systemName: "person.circle")
-                                        @unknown default:
-                                            EmptyView()
-                                        }
+                                AsyncImage(url: authService.user?.photoURL) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        EmptyView()
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 320, height: 200)
+                                            .clipped()
+                                    case .failure:
+                                        Image(systemName: "person.circle")
+                                    @unknown default:
+                                        EmptyView()
                                     }
                                     Label("Select a picture", systemImage: "photo.on.rectangle.angled")
                                 }
