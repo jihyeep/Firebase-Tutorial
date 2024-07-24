@@ -17,7 +17,21 @@ struct FeedView: View {
         NavigationStack {
             List(posts) { post in
                 VStack(alignment: .leading) {
-                    VStack {
+                    AsyncImage(url: URL(string: post.imageURL ?? "")) { phase in
+                        switch phase {
+                        case .empty:
+                            EmptyView()
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .frame(width: 300, height: 200)
+                        case .failure:
+                            Image(systemName: "photo")
+                        default:
+                            EmptyView()
+                        }
+                    }
+                    VStack(alignment: .leading) {
                         Text(post.description ?? "")
                             .font(.headline)
                             .padding(12)
