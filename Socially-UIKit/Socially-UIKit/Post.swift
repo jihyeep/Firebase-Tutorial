@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct Post: Identifiable, Decodable {
+struct Post: Identifiable, Hashable, Decodable {
     // Firestore와 id를 mapping
     @DocumentID var id: String?
     var description: String?
