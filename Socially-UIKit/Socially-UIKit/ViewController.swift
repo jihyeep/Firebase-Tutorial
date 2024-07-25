@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+import Kingfisher
 
 class ViewController: UIViewController {
     
@@ -50,12 +51,43 @@ class ViewController: UIViewController {
     func configureDataSource() {
         dataSource = UITableViewDiffableDataSource<Section, Post>(tableView: tableView) { 
             (tableView, indexPath, item) -> UITableViewCell? in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "postCell")
+            tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
             
-            var config = cell?.defaultContentConfiguration()
-            config?.text = item.description
-            print(item.description ?? "-")
-            cell?.contentConfiguration = config
+            // Remove any existing subviews to avoid duplicates
+            cell.contentView.subviews.forEach {
+                $0.removeFromSuperview()
+            }
+
+            // Create an image view
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+            imageView.contentMode = .scaleAspectFit
+            imageView.center = cell.contentView.center
+            cell.contentView.addSubview(imageView)
+
+            // Create a label for the title
+            let titleLabel = UILabel(frame: CGRect(x: 0, y: 200, width: cell.contentView.bounds.width, height: 20))
+            titleLabel.textAlignment = .center
+            titleLabel.text = item.description
+            titleLabel.center = CGPoint(x: cell.contentView.center.x, y: cell.contentView.bounds.height - 20)
+            cell.contentView.addSubview(titleLabel)
+
+            // Load the image asynchronously using Kingfisher
+            let processor = DownsamplingImageProcessor(size: imageView.bounds.size)
+            imageView.kf.indicatorType = .activity
+            imageView.image = UIImage(systemName: "photo.artframe")
+
+            if let imageURL = item.imageURL {
+                imageView.kf.setImage(
+                    with: URL(string: imageURL)!,
+                    options: [
+                        .processor(processor),
+                        .scaleFactor(UIScreen.main.scale),
+                        .transition(.fade(0.2)),
+                        .cacheOriginalImage
+                    ]
+                )
+            }
             
             return cell
             

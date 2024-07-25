@@ -21,5 +21,6 @@ struct Post: Identifiable, Hashable, Decodable {
         dump(document.data())
         self.id = document.documentID
         self.description = document.data()["description"] as? String
+        self.imageURL = document.data()["imageURL"] as? String
     }
 }
