@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         configureTableView()
         configureDataSource()
         
-        // Firebase와 DataSource 연결
+        // Firebase와 DataSource 연동
         startListeningToFirestore()
     }
     
