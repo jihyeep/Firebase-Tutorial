@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     private var db: Firestore!
     private var dataSource: UITableViewDiffableDataSource<Section, Post>!
     private var tableView: UITableView!
-    
+    private var listener: ListenerRegistration?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +25,17 @@ class ViewController: UIViewController {
         self.title = "Feed"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "text.bubble"), tag: 0)
+        
+        db = Firestore.firestore()
+        configureTableView()
+        configureDataSource()
+        
+        // Firebase와 DataSource 연결
+        startListeningToFirestore()
+    }
+    
+    deinit {
+        listener?.remove()
     }
     
     func configureTableView() {
@@ -43,11 +54,32 @@ class ViewController: UIViewController {
             
             var config = cell?.defaultContentConfiguration()
             config?.text = item.description
+            print(item.description ?? "-")
             cell?.contentConfiguration = config
             
             return cell
             
         }
+    }
+    
+    func startListeningToFirestore() {
+        listener = db.collection("Posts").addSnapshotListener {
+            [weak self] (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents else {
+                print("Error fetching documents: \(error!)")
+                return
+            }
+            dump(documents)
+            let posts = documents.compactMap { Post(document: $0) }
+            self?.updateDataSource(with: posts)
+        }
+    }
+
+    func updateDataSource(with posts: [Post]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(posts, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 
 }

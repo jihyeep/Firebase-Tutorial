@@ -16,4 +16,10 @@ struct Post: Identifiable, Hashable, Decodable {
     
     // 서버 시간 정렬
     @ServerTimestamp var datePublished: Date?
+    
+    init?(document: QueryDocumentSnapshot) {
+        dump(document.data())
+        self.id = document.documentID
+        self.description = document.data()["description"] as? String
+    }
 }
