@@ -16,6 +16,10 @@ class AuthService {
     
     fileprivate var currentNonce: String?
     
+    var currentUser: User? {
+         Auth.auth().currentUser
+     }
+    
     // MARK: - Apple login
     func performAppleSignIn(on viewController: UIViewController, completion: @escaping (Result<User, Error>) -> Void) {
         let nonce = randomNonceString()
