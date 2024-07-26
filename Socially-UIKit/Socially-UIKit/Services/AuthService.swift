@@ -14,11 +14,15 @@ class AuthService {
     static let shared = AuthService()
     private init() {}
     
-    fileprivate var currentNonce: String?
+    var currentNonce: String?
     
     var currentUser: User? {
          Auth.auth().currentUser
      }
+    
+    func listenAuthState(_ listeningBlock: @escaping (Auth, User?) -> Void) {
+        Auth.auth().addStateDidChangeListener(listeningBlock)
+    }
     
     // MARK: - Apple login
     func performAppleSignIn(on viewController: UIViewController, completion: @escaping (Result<User, Error>) -> Void) {
@@ -33,7 +37,7 @@ class AuthService {
         // 인증
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         authorizationController.delegate = viewController as? ASAuthorizationControllerDelegate
-//        authorizationController.presentationContextProvider = viewController as? ASWebAuthenticationPresentationContextProviding
+        authorizationController.presentationContextProvider = viewController as? ASAuthorizationControllerPresentationContextProviding
         authorizationController.performRequests()
     }
     
@@ -53,6 +57,16 @@ class AuthService {
                 completion(.success(user))
             }}
     }
+    
+    func signOut(completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try Auth.auth().signOut()
+            completion(.success(()))
+        } catch let error {
+            completion(.failure(error))
+        }
+    }
+    
     // MARK: - Private Methods
     // 난수 생성
     private func randomNonceString(length: Int = 32) -> String {
