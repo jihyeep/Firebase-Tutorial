@@ -73,6 +73,9 @@ class PostTableViewCell: UITableViewCell {
                 ]
             )
         } else {
+            if let path = item.path {
+                item.checkImageURL(path)
+            }
             postImageView.image = UIImage(systemName: "photo.artframe")
         }
     }

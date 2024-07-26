@@ -23,19 +23,16 @@ struct Post: Identifiable, Hashable, Decodable {
         self.description = document.data()["description"] as? String
         if let url = document.data()["imageURL"] as? String {
             self.imageURL = url
-        } else if let path = document.data()["path"] as? String {
-            // imageURL이 없는 경우 path 값을 사용하여 비동기적으로 URL 확인
-            let mutableSelf = self
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                mutableSelf.checkImageURL(path)
-            }
+        }
+        if let path = document.data()["path"] as? String {
+            self.path = path
         }
     }
     
     func checkImageURL(_ path: String) {
         let thumbRef = Storage.storage().reference().child("thumbs/\(path)_320x200")
         thumbRef.downloadURL { url, error in
-            if let error = error {
+            if error != nil {
                 return
             }
 
@@ -43,7 +40,7 @@ struct Post: Identifiable, Hashable, Decodable {
             let docId = self.id {
                 Firestore.firestore().collection("Posts")
                     .document(docId)
-                    .setData(["imageURL": url], merge: true)
+                    .setData(["imageURL": url.absoluteString], merge: true)
             }
         }
 
