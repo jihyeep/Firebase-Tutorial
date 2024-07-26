@@ -10,6 +10,9 @@ import FirebaseFirestore
 import FirebaseStorage
 
 class PostService {
+    static let shared = PostService()
+    private init() {}
+    
     private let db = Firestore.firestore()
     private let storage = Storage.storage().reference()
     
