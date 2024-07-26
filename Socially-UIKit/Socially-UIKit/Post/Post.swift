@@ -12,6 +12,8 @@ import FirebaseStorage
 struct Post: Identifiable, Hashable, Decodable {
     // Firestore와 id를 mapping
     @DocumentID var id: String?
+    var userId: String?
+    var userName: String?
     var description: String?
     var imageURL: String?
     var path: String?
@@ -34,6 +36,7 @@ struct Post: Identifiable, Hashable, Decodable {
         if let path = document.data()["path"] as? String {
             self.path = path
         }
+        self.userName = document.data()["userName"] as? String
     }
     
     func checkImageURL(_ path: String) {
@@ -54,6 +57,5 @@ struct Post: Identifiable, Hashable, Decodable {
                     ], merge: true)
             }
         }
-
     }
 }

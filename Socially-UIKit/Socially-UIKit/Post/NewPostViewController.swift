@@ -182,6 +182,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, PHPickerViewC
             let post = [
                 "description": description,
                 "datePublished": datePublished,
+                "userId": AuthService.shared.currentUser?.uid ?? "",
+                "userName": AuthService.shared.currentUser?.displayName ?? "Unknown",
                 "path": path
             ]
 
