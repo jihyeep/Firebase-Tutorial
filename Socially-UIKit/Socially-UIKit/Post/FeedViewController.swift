@@ -78,38 +78,67 @@ class FeedViewController: UIViewController {
                     print("Error fetching documents: \(error!)")
                     return
                 }
-                let posts = documents.compactMap { Post(document: $0) }
+                let posts = documents.compactMap {
+                    Post(document: $0)
+                }
+                posts.forEach { post in
+                    if let path = post.path {
+                        post.checkImageURL(path)
+                    }
+                }
                 self?.updateDataSource(with: posts)
                 self?.tableView.refreshControl?.endRefreshing()
             }
     }
     
     func configureDataSource() {
-        dataSource = UITableViewDiffableDataSource<Section, Post>(tableView: tableView) { 
+        dataSource = UITableViewDiffableDataSource<Section, Post>(tableView: tableView) {
             (tableView, indexPath, item) -> UITableViewCell? in
             tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
             let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! PostTableViewCell
             
             cell.configureItem(with: item)
             
-            return cell
+            // 기존 컨트롤 UI 제거
+            cell.contentView.subviews.forEach { subview in
+                if subview is UIControl {
+                    subview.removeFromSuperview()
+                }
+            }
             
+            let control = UIControl()
+            control.translatesAutoresizingMaskIntoConstraints = false
+            let cellAction = UIAction { [weak self] _ in
+                let detailViewController = PostDetailViewController(post: item)
+                self?.navigationController?.pushViewController(detailViewController, animated: true)
+            }
+            control.addAction(cellAction, for: .touchUpInside)
+            cell.contentView.addSubview(control)
+
+            NSLayoutConstraint.activate([
+                control.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
+                control.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+                control.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+                control.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor),
+            ])
+            
+            return cell
         }
     }
     
     func startListeningToFirestore() {
         listener = db.collection("Posts")
                     .order(by: "datePublished", descending: true) // 시간순 정렬
-                    .addSnapshotListener {
-            [weak self] (querySnapshot, error) in
-            guard let documents = querySnapshot?.documents else {
-                print("Error fetching documents: \(error!)")
-                return
-            }
-
-            let posts = documents.compactMap { Post(document: $0) }
-            self?.updateDataSource(with: posts)
-        }
+                    .addSnapshotListener { [weak self] querySnapshot, error in
+                        guard let documents = querySnapshot?.documents else {
+                            print("Error fetching documents: \(error!)")
+                            return
+                        }
+                        let posts = documents.compactMap { 
+                            Post(document: $0)
+                        }
+                        self?.updateDataSource(with: posts)
+                    }
     }
 
     func updateDataSource(with posts: [Post]) {
