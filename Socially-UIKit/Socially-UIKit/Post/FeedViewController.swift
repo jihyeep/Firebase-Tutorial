@@ -55,11 +55,33 @@ class FeedViewController: UIViewController {
     
     func configureTableView() {
         tableView = UITableView(frame: view.bounds, style: .plain)
+        
+        // tableView 새로고침
+        let refreshControl = UIRefreshControl()
+        refreshControl.addAction(UIAction { [weak self] _ in
+            self?.reloadData()
+        }, for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
         view.addSubview(tableView)
         
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
         tableView.rowHeight = 280
 
+    }
+    
+    func reloadData() {
+        db.collection("Posts")
+            .order(by: "datePublished", descending: true).getDocuments {
+                [weak self] querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
+                    print("Error fetching documents: \(error!)")
+                    return
+                }
+                let posts = documents.compactMap { Post(document: $0) }
+                self?.updateDataSource(with: posts)
+                self?.tableView.refreshControl?.endRefreshing()
+            }
     }
     
     func configureDataSource() {
