@@ -49,9 +49,7 @@ class FeedViewController: UIViewController {
             navigationItem.rightBarButtonItem = barItem
     }
     
-    deinit {
-        listener?.remove()
-    }
+
     
     func configureTableView() {
         tableView = UITableView(frame: view.bounds, style: .plain)
@@ -147,6 +145,10 @@ class FeedViewController: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(posts, toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    deinit {
+        listener?.remove()
     }
 
 }

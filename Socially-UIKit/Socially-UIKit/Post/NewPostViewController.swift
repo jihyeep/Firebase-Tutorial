@@ -164,7 +164,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, PHPickerViewC
     // MARK: - Methods
     func addData(description: String, datePublished: Date, data: Data, completion: @escaping (Error?) -> Void) {
         let path = UUID().uuidString
-        let fileRef = storage.child(path)
+        let fileRef = storage.child("thumbs/\(path)_320x200")
 
         // 파일 타입 및 MIME 타입 추측
         let mimeType = detectMimeType(from: data)
