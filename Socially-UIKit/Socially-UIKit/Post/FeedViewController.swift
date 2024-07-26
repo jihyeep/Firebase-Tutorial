@@ -99,13 +99,14 @@ class FeedViewController: UIViewController {
             
             cell.configureItem(with: item)
             
-            // 기존 컨트롤 UI 제거
+            // 기존 UIControl 제거
             cell.contentView.subviews.forEach { subview in
                 if subview is UIControl {
                     subview.removeFromSuperview()
                 }
             }
             
+            // 페이지 이동 이벤트 처리를 위한 UIControl 추가
             let control = UIControl()
             control.translatesAutoresizingMaskIntoConstraints = false
             let cellAction = UIAction { [weak self] _ in
