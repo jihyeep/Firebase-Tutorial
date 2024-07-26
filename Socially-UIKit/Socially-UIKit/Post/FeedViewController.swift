@@ -80,6 +80,7 @@ class FeedViewController: UIViewController {
                     .order(by: "datePublished", descending: true) // 시간순 정렬
                     .addSnapshotListener {
             [weak self] (querySnapshot, error) in
+                        print("Update document!")
             guard let documents = querySnapshot?.documents else {
                 print("Error fetching documents: \(error!)")
                 return
