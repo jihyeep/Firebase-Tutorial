@@ -12,9 +12,9 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.view.backgroundColor = .systemBackground
         self.title = "Profile"
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "person.circle"), tag: 0)
     }
     
 
