@@ -182,7 +182,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, PHPickerViewC
             // 임시 처리
             Thread.sleep(forTimeInterval: 10)
             
-            // 썸네일 저장
+            // 썸네일 지정
             let thumbRef = Storage.storage().reference().child("thumbs/\(path)_320x200")
             
             fileRef.downloadURL { url, error in
@@ -199,7 +199,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, PHPickerViewC
                 let post = [
                     "description": description,
                     "datePublished": datePublished,
-                    "imageURL": url.absoluteString
+                    "imageURL": url.absoluteString,
+                    "path": path
                 ]
 
                 self.db.collection("Posts").addDocument(data: post) { error in

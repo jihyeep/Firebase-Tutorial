@@ -9,7 +9,7 @@ import UIKit
 import FirebaseFirestore
 import Kingfisher
 
-class ViewController: UIViewController {
+class FeedViewController: UIViewController {
     
     enum Section {
         case main
