@@ -20,5 +20,5 @@ Firebase를 사용한 앱 프로젝트
    - Kingfisher를 활용한 이미지 캐싱
    - 이미지 resizing하여 썸네일 생성
    - Storage에 이미지 데이터(URL) CRUD
-   - UIRefreshControl을 사용한 데이터 새로고침ㅂ
+   - UIRefreshControl을 사용한 데이터 새로고침
    - Firestore 및 Storage 데이터 수정/삭제 권한 부여
